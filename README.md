@@ -1,22 +1,19 @@
 # bqbMaker 
 > 组件库使用 [iview-weapp](https://github.com/TalkingData/iview-weapp)
+> 
+> 构建使用 [mpvue](https://github.com/Meituan-Dianping/mpvue)
 
 ## 截图
 
 ![](./screen-1.png)
 ![](./screen-2.png)
 
-## Setup
+## 安装&运行
 ``` bash
-# install dependencies
+# 安装依赖
 npm install
 
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
+# 构建完成后在微信开发者工具打开dist目录
 npm run build
 
-# build for production and view the bundle analyzer report
-npm run build --report
 ```
