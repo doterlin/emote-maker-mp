@@ -2,13 +2,13 @@
   "name": "bqbMaker",
   "version": "1.0.0",
   "description": "A Mpvue project",
-  "author": "lhq",
+  "author": "doterlin",
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",
     "build": "node build/build.js",
-    "lint": "eslint --ext .js,.vue src"
+    "lint": "eslint --fix --ext .js,.vue src"
   },
   "dependencies": {
     "flyio": "^0.5.9",

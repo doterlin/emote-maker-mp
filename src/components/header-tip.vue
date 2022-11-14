@@ -6,22 +6,24 @@
 
 <script>
 export default {
-	data() {
-		return {
-			keyword: ''
-		}
-	},
-	methods: {
-		comfirm() {
-			if(this.keyword === '') return wx.showToast({
-				title: '请输入关键字',
-				icon: 'none',
-				duration: 1500
-			})
-			this.$emit('comfirm', this.keyword)
-		}
-	},
-};
+  data () {
+    return {
+      keyword: ''
+    }
+  },
+  methods: {
+    comfirm () {
+      if (this.keyword === '') {
+        return wx.showToast({
+          title: '请输入关键字',
+          icon: 'none',
+          duration: 1500
+        })
+      }
+      this.$emit('comfirm', this.keyword)
+    }
+  }
+}
 </script>
 
 <style scoped lang='scss'>

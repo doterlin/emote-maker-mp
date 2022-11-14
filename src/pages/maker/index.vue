@@ -59,248 +59,249 @@
 </template>
 
 <script>
-import colorSelector from '../../components/color-selector';
-import { doAnimationFrame, abortAnimationFrame, rpx2px } from '../../utils';
-import MpvueCropper from 'mpvue-cropper';
+import colorSelector from '../../components/color-selector'
+import { doAnimationFrame, abortAnimationFrame, rpx2px } from '../../utils'
+import MpvueCropper from 'mpvue-cropper'
 
-let wecropper;
-const device = wx.getSystemInfoSync();
-const width = device.windowWidth;
-const height = device.windowHeight - 100 * width/750;
+let wecropper
+const device = wx.getSystemInfoSync()
+const width = device.windowWidth
+const height = device.windowHeight - 100 * width / 750
 
-let ctx;
+let ctx
 const initText = [
-	{
-		txt: '输入文字',
-		currentColor: '#000',
-		fontSize: 20,
-		x: rpx2px(300),
-		y: rpx2px(600) - 50
-	},
-	{
-		txt: '',
-		currentColor: '#000',
-		fontSize: 20,
-		x: rpx2px(300),
-		y: rpx2px(600) - 30
-	},
-	{
-		txt: '',
-		currentColor: '#000',
-		fontSize: 20,
-		x: rpx2px(300),
-		y: rpx2px(600) - 10
-	}
-];
+  {
+    txt: '输入文字',
+    currentColor: '#000',
+    fontSize: 20,
+    x: rpx2px(300),
+    y: rpx2px(600) - 50
+  },
+  {
+    txt: '',
+    currentColor: '#000',
+    fontSize: 20,
+    x: rpx2px(300),
+    y: rpx2px(600) - 30
+  },
+  {
+    txt: '',
+    currentColor: '#000',
+    fontSize: 20,
+    x: rpx2px(300),
+    y: rpx2px(600) - 10
+  }
+]
 
 export default {
-	components: {
-		'color-selector': colorSelector,
-		MpvueCropper
-	},
-	data() {
-		return {
-			// userText: initText.map(item => ({...item})),
-			inited: false,
-			oneText: {
-				txt: '',
-				plc: '输入第{{index}}组文字, 可拖动文字',
-				x: rpx2px(300),
-				y: rpx2px(600) - 50
-			},
-			userText: [],
-			curFontSize: 16,
-			curColor: '#000',
-			selectedIndex: 0, // 当前操作的文本index
-			path: '', // 加载下来的模版的temp path，要想在canvas里面绘制img，必须加载到本地，不能直接引用远程地址
+  components: {
+    'color-selector': colorSelector,
+    MpvueCropper
+  },
+  data () {
+    return {
+      // userText: initText.map(item => ({...item})),
+      inited: false,
+      oneText: {
+        txt: '',
+        plc: '输入第{{index}}组文字, 可拖动文字',
+        x: rpx2px(300),
+        y: rpx2px(600) - 50
+      },
+      userText: [],
+      curFontSize: 16,
+      curColor: '#000',
+      selectedIndex: 0, // 当前操作的文本index
+      path: '', // 加载下来的模版的temp path，要想在canvas里面绘制img，必须加载到本地，不能直接引用远程地址
 
-			showCropper: false,
-			cropperOpt: {
-				//cropper配置
-				id: 'cropper',
-				targetId: 'targetCropper',
-				pixelRatio: device.pixelRatio,
-				width,
-				height,
-				scale: 4,
-				zoom: 8,
-				cut: {
-					x: (width - rpx2px(600)) / 2,
-					y: (height - rpx2px(600)) / 2,
-					width: rpx2px(600),
-					height: rpx2px(600)
-				},
-				boundStyle: {
-					color: '#04b00f',
-					mask: 'rgba(0,0,0,0.8)',
-					lineWidth: 1
-				}
-			}
-		};
-	},
-	watch: {
-		userText: {
-			handler: function() {
-				this.updateCanvas();
-			},
-			deep: true
-		}
-	},
-	methods: {
-		doCustomer() {
-			this.showCropper = true;
-		},
-		removeLastText() {
-			if (this.selectedIndex === 0) return (this.userText[this.selectedIndex].txt = '');
-			this.selectedIndex--;
-			this.userText.splice(-1);
-		},
-		completeText() {
-			if (this.userText[this.selectedIndex].txt === '')
-				return wx.showToast({
-					title: '请输入文字哦!',
-					icon: 'none',
-					duration: 1000
-				});
-			this.selectedIndex++;
-			this.addText();
-		},
-		addText() {
-			let _oneText = {
-				...this.oneText,
-				// txt: this.oneText.txt.replace('{{index}}', this.selectedIndex + 1),
-				plc: this.oneText.plc.replace('{{index}}', this.selectedIndex + 1),
-				currentColor: this.curColor,
-				fontSize: this.curFontSize,
-				y: rpx2px(600) - Math.abs(50 - 20 * this.selectedIndex)
-			};
-			this.userText.push(_oneText);
-			// this.selectedIndex++
-		},
-		touchstart(e) {
-			this.userText[this.selectedIndex].x = e.x;
-			this.userText[this.selectedIndex].y = e.y;
-			this.updateCanvas();
-		},
-		touchmove(e) {
-			this.userText[this.selectedIndex].x = e.x;
-			this.userText[this.selectedIndex].y = e.y;
-			this.animationId = doAnimationFrame(this.updateCanvas); // touch move的时候节流一下 可能性能会好些（心理作用😂 ）
-		},
-		touchend(e) {
-			abortAnimationFrame(this.animationId);
-		},
-		changeTxt({ mp }) {
-			this.userText[this.selectedIndex]['txt'] = mp.detail.detail.value;
-		},
-		changeColor(color) {
-			this.userText[this.selectedIndex]['currentColor'] = color;
-		},
-		changeFontsize({ mp }) {
-			this.userText[this.selectedIndex]['fontSize'] = mp.detail.value;
-		},
-		changeSelectedIndex({ mp }) {
-			this.selectedIndex = mp.detail.key;
-		},
-		updateCanvas() {
-			ctx.drawImage(this.path, 0, 0, rpx2px(600), rpx2px(600));
-			ctx.setTextAlign('center'); // 必须每次在updateCanvas重新设置，否则模拟器上生效但真机下不会生效
-			this.userText.forEach(item => {
-				ctx.font = `bold ${item.fontSize}px/${item.fontSize}px sans-serif`;
-				ctx.setFillStyle(item.currentColor);
-				ctx.fillText(item.txt, item.x, item.y);
-			});
-			ctx.draw();
-		},
-		doMake() {
-			wx.canvasToTempFilePath({
-				canvasId: 'maker',
-				success: function(res) {
-					wx.previewImage({
-						current: res.tempFilePath,
-						urls: [res.tempFilePath]
-					});
-				}
-			});
-		},
-		share() {},
+      showCropper: false,
+      cropperOpt: {
+        // cropper配置
+        id: 'cropper',
+        targetId: 'targetCropper',
+        pixelRatio: device.pixelRatio,
+        width,
+        height,
+        scale: 4,
+        zoom: 8,
+        cut: {
+          x: (width - rpx2px(600)) / 2,
+          y: (height - rpx2px(600)) / 2,
+          width: rpx2px(600),
+          height: rpx2px(600)
+        },
+        boundStyle: {
+          color: '#04b00f',
+          mask: 'rgba(0,0,0,0.8)',
+          lineWidth: 1
+        }
+      }
+    }
+  },
+  watch: {
+    userText: {
+      handler: function () {
+        this.updateCanvas()
+      },
+      deep: true
+    }
+  },
+  methods: {
+    doCustomer () {
+      this.showCropper = true
+    },
+    removeLastText () {
+      if (this.selectedIndex === 0) return (this.userText[this.selectedIndex].txt = '')
+      this.selectedIndex--
+      this.userText.splice(-1)
+    },
+    completeText () {
+      if (this.userText[this.selectedIndex].txt === '') {
+        return wx.showToast({
+          title: '请输入文字哦!',
+          icon: 'none',
+          duration: 1000
+        })
+      }
+      this.selectedIndex++
+      this.addText()
+    },
+    addText () {
+      let _oneText = {
+        ...this.oneText,
+        // txt: this.oneText.txt.replace('{{index}}', this.selectedIndex + 1),
+        plc: this.oneText.plc.replace('{{index}}', this.selectedIndex + 1),
+        currentColor: this.curColor,
+        fontSize: this.curFontSize,
+        y: rpx2px(600) - Math.abs(50 - 20 * this.selectedIndex)
+      }
+      this.userText.push(_oneText)
+      // this.selectedIndex++
+    },
+    touchstart (e) {
+      this.userText[this.selectedIndex].x = e.x
+      this.userText[this.selectedIndex].y = e.y
+      this.updateCanvas()
+    },
+    touchmove (e) {
+      this.userText[this.selectedIndex].x = e.x
+      this.userText[this.selectedIndex].y = e.y
+      this.animationId = doAnimationFrame(this.updateCanvas) // touch move的时候节流一下 可能性能会好些（心理作用😂 ）
+    },
+    touchend (e) {
+      abortAnimationFrame(this.animationId)
+    },
+    changeTxt ({ mp }) {
+      this.userText[this.selectedIndex]['txt'] = mp.detail.detail.value
+    },
+    changeColor (color) {
+      this.userText[this.selectedIndex]['currentColor'] = color
+    },
+    changeFontsize ({ mp }) {
+      this.userText[this.selectedIndex]['fontSize'] = mp.detail.value
+    },
+    changeSelectedIndex ({ mp }) {
+      this.selectedIndex = mp.detail.key
+    },
+    updateCanvas () {
+      ctx.drawImage(this.path, 0, 0, rpx2px(600), rpx2px(600))
+      ctx.setTextAlign('center') // 必须每次在updateCanvas重新设置，否则模拟器上生效但真机下不会生效
+      this.userText.forEach(item => {
+        ctx.font = `bold ${item.fontSize}px/${item.fontSize}px sans-serif`
+        ctx.setFillStyle(item.currentColor)
+        ctx.fillText(item.txt, item.x, item.y)
+      })
+      ctx.draw()
+    },
+    doMake () {
+      wx.canvasToTempFilePath({
+        canvasId: 'maker',
+        success: function (res) {
+          wx.previewImage({
+            current: res.tempFilePath,
+            urls: [res.tempFilePath]
+          })
+        }
+      })
+    },
+    share () {},
 
-		cropperReady(...args) {
-			console.log('cropper ready!');
-		},
-		cropperBeforeImageLoad(...args) {
-			console.log('before image load');
-		},
-		cropperLoad(...args) {
-			console.log('image loaded');
-		},
-		cropperBeforeDraw(...args) {
-			// Todo: 绘制水印等等
-		},
-		uploadTap() {
-			wx.chooseImage({
-				count: 1, // 默认9
-				sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-				sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-				success: res => {
-					const src = res.tempFilePaths[0];
-					//  获取裁剪图片资源后，给data添加src属性及其值
+    cropperReady (...args) {
+      console.log('cropper ready!')
+    },
+    cropperBeforeImageLoad (...args) {
+      console.log('before image load')
+    },
+    cropperLoad (...args) {
+      console.log('image loaded')
+    },
+    cropperBeforeDraw (...args) {
+      // Todo: 绘制水印等等
+    },
+    uploadTap () {
+      wx.chooseImage({
+        count: 1, // 默认9
+        sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+        sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+        success: res => {
+          const src = res.tempFilePaths[0]
+          //  获取裁剪图片资源后，给data添加src属性及其值
 
-					wecropper.pushOrigin(src);
-				}
-			});
-		},
-		getCropperImage() {
-			wecropper
-				.getCropperImage({ original: true })
-				.then(src => {
-					// wx.previewImage({
-					//   current: '', // 当前显示图片的http链接
-					//   urls: [src] // 需要预览的图片http链接列表
-					// })
-					this.initImg(src);
-					this.showCropper = false;
-				})
-				.catch(e => {
-					console.error('获取图片失败');
-					this.showCropper = false;
-					wx.showToast({
-						title: '自定义图片失败!',
-						icon: 'none',
-						duration: 1000
-					});
-				});
-		},
+          wecropper.pushOrigin(src)
+        }
+      })
+    },
+    getCropperImage () {
+      wecropper
+        .getCropperImage({ original: true })
+        .then(src => {
+          // wx.previewImage({
+          //   current: '', // 当前显示图片的http链接
+          //   urls: [src] // 需要预览的图片http链接列表
+          // })
+          this.initImg(src)
+          this.showCropper = false
+        })
+        .catch(e => {
+          console.error('获取图片失败')
+          this.showCropper = false
+          wx.showToast({
+            title: '自定义图片失败!',
+            icon: 'none',
+            duration: 1000
+          })
+        })
+    },
 
-		initImg(url) {
-			const imageResource = !!url ? url : this.$root.$mp.query.url;
-			wx.getImageInfo({
-				src: imageResource,
-				success: res => {
-					// 重置文本
-					this.userText = [];
-					this.selectedIndex = 0;
-					this.addText();
-					this.path = res.path;
-					this.inited = true;
-				}
-			});
-		}
-	},
-	mounted() {
-		wecropper = this.$refs.cropper;
-	},
-	onLoad() {
-		ctx = wx.createCanvasContext('maker');
-		this.initImg();
-	},
-	onShareAppMessage() {
-		return {
-			title: !this.userText[0].txt ? '我发现了个斗图神器！': this.userText[0].txt,
-			path: `/pages/index/main?id=${this.$root.$mp.query.id}&url=${this.$root.$mp.query.url}`
-		};
-	}
-};
+    initImg (url) {
+      const imageResource = url || this.$root.$mp.query.url
+      wx.getImageInfo({
+        src: imageResource,
+        success: res => {
+          // 重置文本
+          this.userText = []
+          this.selectedIndex = 0
+          this.addText()
+          this.path = res.path
+          this.inited = true
+        }
+      })
+    }
+  },
+  mounted () {
+    wecropper = this.$refs.cropper
+  },
+  onLoad () {
+    ctx = wx.createCanvasContext('maker')
+    this.initImg()
+  },
+  onShareAppMessage () {
+    return {
+      title: !this.userText[0].txt ? '我发现了个斗图神器！' : this.userText[0].txt,
+      path: `/pages/index/main?id=${this.$root.$mp.query.id}&url=${this.$root.$mp.query.url}`
+    }
+  }
+}
 </script>
 
 <style>

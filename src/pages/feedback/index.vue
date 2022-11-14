@@ -7,25 +7,25 @@
 
 <script>
 export default {
-	components: {},
-	data() {
-		return {
-			content: '',
-			email: '',
-			nickname: ''
-		};
-	},
-	methods: {
+  components: {},
+  data () {
+    return {
+      content: '',
+      email: '',
+      nickname: ''
+    }
+  },
+  methods: {
 
-	},
-	onLoad() {},
-	onShareAppMessage() {
-		return {
-			title: this.$config.APP_NAME,
-			path: `/pages/index/main`
-		};
-	}
-};
+  },
+  onLoad () {},
+  onShareAppMessage () {
+    return {
+      title: this.$config.APP_NAME,
+      path: `/pages/index/main`
+    }
+  }
+}
 </script>
 
 <style>

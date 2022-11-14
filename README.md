@@ -3,6 +3,9 @@
 
 ## 截图
 
+![](./screen-1.png)
+![](./screen-2.png)
+
 ## Setup
 ``` bash
 # install dependencies

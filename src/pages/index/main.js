@@ -15,9 +15,9 @@ export default {
       'i-spin': '../../static/iview/spin/index',
       'i-modal': '../../static/iview/modal/index',
       'i-panel': '../../static/iview/panel/index',
-			'i-avatar': '../../static/iview/avatar/index',
-			"i-cell-group": "../../static/iview/cell-group/index",
-			"i-cell": "../../static/iview/cell/index"
+      'i-avatar': '../../static/iview/avatar/index',
+      'i-cell-group': '../../static/iview/cell-group/index',
+      'i-cell': '../../static/iview/cell/index'
     }
   }
 }

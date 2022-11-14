@@ -21,16 +21,15 @@
 
 <script>
 export default {
-	methods: {
-		appreciate(){
-			console.log('appreciate');
-			wx.previewImage({
+  methods: {
+    appreciate () {
+      console.log('appreciate')
+      wx.previewImage({
 			  urls: ['https://6e6f-note-1888d4-1258018830.tcb.qcloud.la/qrcode.jpg?sign=6b2f375d3f5b6af2bf863795bee155ad&t=1572343078']
-			})
-			
-		}
-	}
-};
+      })
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss">

@@ -7,18 +7,18 @@
 
 <script>
 export default {
-	props: ['number'],
-	data() {
-		return {
-			keyword: ''
-		}
-	},
-	methods: {
-		comfirm() {
-			this.$emit('comfirm', this.keyword)
-		}
-	},
-};
+  props: ['number'],
+  data () {
+    return {
+      keyword: ''
+    }
+  },
+  methods: {
+    comfirm () {
+      this.$emit('comfirm', this.keyword)
+    }
+  }
+}
 </script>
 
 <style scoped lang='scss'>

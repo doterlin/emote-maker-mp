@@ -13,13 +13,13 @@ app.$mount()
 const WX_ENV_ID = 'note-1888d4'
 wx.cloud.init({
   env: WX_ENV_ID,
-  traceUser: true,
+  traceUser: true
 })
 
 Vue.prototype.$config = config
 Vue.prototype.$db = wx.cloud.database({
   env: WX_ENV_ID
-}) 
+})
 Vue.prototype.$cloud = wx.cloud
 
 export default {

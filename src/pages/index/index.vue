@@ -36,63 +36,63 @@
 </template>
 
 <script>
-import shower from "../../components/shower.vue";
-import like from "../../components/like";
+import shower from '../../components/shower.vue'
+import like from '../../components/like'
 export default {
   components: {
     shower,
-    like,
+    like
   },
-  data() {
+  data () {
     return {
       current: 0,
       tabbarConf: [
         {
-          img: "/static/assets/icon1s.jpg",
-          curImg: "/static/assets/icon1s.jpg",
-          text: "自己做",
+          img: '/static/assets/icon1s.jpg',
+          curImg: '/static/assets/icon1s.jpg',
+          text: '自己做'
         },
         {
-          img: "/static/assets/icon2s.jpg",
-          curImg: "/static/assets/icon2s.jpg",
-          text: "找素材",
+          img: '/static/assets/icon2s.jpg',
+          curImg: '/static/assets/icon2s.jpg',
+          text: '找素材'
         },
         {
-          img: "/static/assets/icon3s.jpg",
-          curImg: "/static/assets/icon3s.jpg",
-          text: "我的",
-        },
-      ],
-    };
+          img: '/static/assets/icon3s.jpg',
+          curImg: '/static/assets/icon3s.jpg',
+          text: '我的'
+        }
+      ]
+    }
   },
   methods: {
-    changeTabbar(index) {
-      this.current = index;
+    changeTabbar (index) {
+      this.current = index
     },
-    toMaker(opt) {
+    toMaker (opt) {
       wx.navigateTo({
-        url: `/pages/maker/main?id=${opt.id}&url=${opt.url}`,
-      });
+        url: `/pages/maker/main?id=${opt.id}&url=${opt.url}`
+      })
     },
-    previewImg(opt) {
+    previewImg (opt) {
       wx.previewImage({
         current: opt.url, // 当前显示图片的http链接
-        urls: [opt.url], // 需要预览的图片http链接列表
-      });
-    },
+        urls: [opt.url] // 需要预览的图片http链接列表
+      })
+    }
   },
-  onShareAppMessage() {
+  onShareAppMessage () {
     return {
       title: this.$config.APP_NAME,
-      path: `/pages/index/main`,
-    };
+      path: `/pages/index/main`
+    }
   },
 
-  onLoad(options) {
+  onLoad (options) {
     if (options.url && options.id) {
       wx.navigateTo({
-        url: "/pages/maker/main?id=" + options.id + "&url=" + options.url,
-      });
+        url: '/pages/maker/main?id=' + options.id + '&url=' + options.url
+      })
     }
 
   /*   // 在页面中定义插屏广告
@@ -116,8 +116,8 @@ export default {
         });
       }, 15000);
     } */
-  },
-};
+  }
+}
 </script>
 
 <style lang="scss">

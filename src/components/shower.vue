@@ -26,133 +26,134 @@
 </template>
 
 <script>
-import search from './search.vue';
+import search from './search.vue'
 // const { $Message } = require('../../static/iview/base/index');
 
 export default {
-	props: {
-		fetchType: String,
-	},
-	data() {
-		return {
-			imgIndex: '',
-			query: '',
-			templateList: [],
-			spinShow: true,
-			current: 1, // 当前页
-			count: 1, // 总页数
-			loadding: false,
-			onePageNum: 18,
-			maxFavNum: 500
-		};
-	},
-	components: {
-		search
-	},
-	methods: {
-		doSearch(key) {
-			console.log('search:', key);
-			this.query = key;
-			this.search();
-			
-			wx.reportAnalytics('search_key', {
-				type: this.fetchType,
-				key: key,
-			});
-		},
-		likeImg({ mp }){
-			let data = mp.target.dataset;
-			var favImgs = wx.getStorageSync('fav_imgs') || [];
-			if(favImgs.length >= this.maxFavNum){
-				return wx.showToast({
+  props: {
+    fetchType: String
+  },
+  data () {
+    return {
+      imgIndex: '',
+      query: '',
+      templateList: [],
+      spinShow: true,
+      current: 1, // 当前页
+      count: 1, // 总页数
+      loadding: false,
+      onePageNum: 18,
+      maxFavNum: 500
+    }
+  },
+  components: {
+    search
+  },
+  methods: {
+    doSearch (key) {
+      console.log('search:', key)
+      this.query = key
+      this.search()
+
+      wx.reportAnalytics('search_key', {
+        type: this.fetchType,
+        key: key
+      })
+    },
+    likeImg ({ mp }) {
+      let data = mp.target.dataset
+      var favImgs = wx.getStorageSync('fav_imgs') || []
+      if (favImgs.length >= this.maxFavNum) {
+        return wx.showToast({
 				  title: '收藏失败, 收藏个数达到上限!',
 				  icon: 'none',
 				  duration: 1000
-				})
-			}
-			// console.log('favImg', {id: data.id, url: data.url, type: this.fetchType})
-			if(!favImgs.some( item => data.id === item.id)){
-				favImgs.push({id: data.id, url: data.url, type: this.fetchType})
-				wx.setStorageSync('fav_imgs', favImgs )
-				wx.showToast({
+        })
+      }
+      // console.log('favImg', {id: data.id, url: data.url, type: this.fetchType})
+      if (!favImgs.some(item => data.id === item.id)) {
+        favImgs.push({id: data.id, url: data.url, type: this.fetchType})
+        wx.setStorageSync('fav_imgs', favImgs)
+        wx.showToast({
 				  title: '收藏成功!',
 				  icon: 'success',
 				  duration: 1000
-				})
-			}else{
-				wx.showToast({
+        })
+      } else {
+        wx.showToast({
 				  title: '该表情已收藏过!',
 				  icon: 'none',
 				  duration: 1000
-				})
-			}
-		},
-		search() {
-			// 重置翻页
-			this.current = 1;
-			this.getPics(true);
-		},
-		clickImage({ mp }) {
-			this.$emit('clickImg', {url: mp.target.dataset.url, id: mp.target.dataset.id})
-			// wx.navigateTo({
-			// 	url: `/pages/maker/main?url=${mp.target.dataset.url}`
-			// });
-		},
+        })
+      }
+    },
+    search () {
+      // 重置翻页
+      this.current = 1
+      this.getPics(true)
+    },
+    clickImage ({ mp }) {
+      this.$emit('clickImg', {url: mp.target.dataset.url, id: mp.target.dataset.id})
+      // wx.navigateTo({
+      // 	url: `/pages/maker/main?url=${mp.target.dataset.url}`
+      // });
+    },
 
-		loadMore() {
-			// console.log('@scrolltolower!!!');
-			this.current++;
-			this.getPics();
-		},
-		
-		async getCount(where){
-			const count = await this.$db.collection('imageLink').where(where).count();
-			this.count = count.total
-			return
-		},
-		getPics(isReset) {
-			this.spinShow = true;
-			this.loadding = true; //防止重复加载
-			
-			let condition = {
-				type: this.fetchType,
-			}
-			if(!!this.query) condition.desc = this.$db.RegExp({ //模糊查找
-				regexp: '.*' + this.query.split('').join('.*') + '.*',
-				options: 'i',
-			})
-			if(!!isReset) wx.showLoading()
-			this.$db
-				.collection('imageLink')
-				.where(condition)
-				.skip((this.current - 1) * this.onePageNum) // 跳过结果集中的前 n 条，从第 n+1 条开始返回
-				.limit(this.onePageNum) // 限制返回数量
-				.get()
-				.then(async res => {
-					// console.log('response.data', res.data);
-					if(!!isReset){
-						await this.getCount(condition)
-						wx.hideLoading()
-					}
-					this.templateList = !!isReset ? res.data : this.templateList.concat(res.data);
-					this.spinShow = false;
-					this.loadding = true;
-				})
-				.catch(err => {
-					console.error(err);
-					this.loadding = false;
-					this.spinShow = false;
-				});
-		},
-	
-	},
-	created() {
-		this.getCount({
-			type: this.fetchType
-		})
-		this.getPics();
-	}
-};
+    loadMore () {
+      // console.log('@scrolltolower!!!');
+      this.current++
+      this.getPics()
+    },
+
+    async getCount (where) {
+      const count = await this.$db.collection('imageLink').where(where).count()
+      this.count = count.total
+    },
+    getPics (isReset) {
+      this.spinShow = true
+      this.loadding = true // 防止重复加载
+
+      let condition = {
+        type: this.fetchType
+      }
+      if (this.query) {
+        condition.desc = this.$db.RegExp({ // 模糊查找
+          regexp: '.*' + this.query.split('').join('.*') + '.*',
+          options: 'i'
+        })
+      }
+      if (isReset) wx.showLoading()
+      this.$db
+        .collection('imageLink')
+        .where(condition)
+        .skip((this.current - 1) * this.onePageNum) // 跳过结果集中的前 n 条，从第 n+1 条开始返回
+        .limit(this.onePageNum) // 限制返回数量
+        .get()
+        .then(async res => {
+          // console.log('response.data', res.data);
+          if (isReset) {
+            await this.getCount(condition)
+            wx.hideLoading()
+          }
+          this.templateList = isReset ? res.data : this.templateList.concat(res.data)
+          this.spinShow = false
+          this.loadding = true
+        })
+        .catch(err => {
+          console.error(err)
+          this.loadding = false
+          this.spinShow = false
+        })
+    }
+
+  },
+  created () {
+    this.getCount({
+      type: this.fetchType
+    })
+    this.getPics()
+  }
+}
 </script>
 
 <style scoped lang="scss">

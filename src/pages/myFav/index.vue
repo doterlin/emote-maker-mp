@@ -26,54 +26,53 @@ export default {
   data () {
     return {
       favList: [],
-			loaded: false
+      loaded: false
     }
   },
 
   methods: {
-		toImg({mp}){
-			let data = mp.target.dataset;
-			console.log(data.type)
-			if(data.type === 'source'){
-				wx.previewImage({
+    toImg ({mp}) {
+      let data = mp.target.dataset
+      console.log(data.type)
+      if (data.type === 'source') {
+        wx.previewImage({
 				  current: data.url, // 当前显示图片的http链接
 				  urls: [data.url] // 需要预览的图片http链接列表
-				})
-			}else if(data.type === 'diy'){
-				wx.navigateTo({
-					url: `/pages/maker/main?id=${data.id}&url=${data.url}`
-				});
-			}
-		},
-		
-    cancelLikeImg({ mp }){
-			let id = mp.target.dataset.id;
-			let index = this.getImgIndex(id);
-			if(index!==null){
-				this.favList.splice(index, 1);
-				wx.setStorageSync('fav_imgs', this.favList);
-			}
-			
-		},
+        })
+      } else if (data.type === 'diy') {
+        wx.navigateTo({
+          url: `/pages/maker/main?id=${data.id}&url=${data.url}`
+        })
+      }
+    },
 
-		getImgIndex(id){
-			let i = null;
-			this.favList.forEach( (item, index) => {
-				if(item.id === id) i = index;
-			})
-			return i;
-		}
+    cancelLikeImg ({ mp }) {
+      let id = mp.target.dataset.id
+      let index = this.getImgIndex(id)
+      if (index !== null) {
+        this.favList.splice(index, 1)
+        wx.setStorageSync('fav_imgs', this.favList)
+      }
+    },
+
+    getImgIndex (id) {
+      let i = null
+      this.favList.forEach((item, index) => {
+        if (item.id === id) i = index
+      })
+      return i
+    }
   },
   onLoad () {
-    var favImgs = wx.getStorageSync('fav_imgs') || [];
-		this.favList = favImgs;
-		this.loaded = true;
+    var favImgs = wx.getStorageSync('fav_imgs') || []
+    this.favList = favImgs
+    this.loaded = true
   },
-  onShareAppMessage() {
+  onShareAppMessage () {
   	return {
   		title: this.$config.APP_NAME,
   		path: `/pages/index/main`
-  	};
+  	}
   }
 }
 </script>

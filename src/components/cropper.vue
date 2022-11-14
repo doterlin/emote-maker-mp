@@ -37,7 +37,7 @@ let wecropper
 
 const device = wx.getSystemInfoSync()
 const width = device.windowWidth
-const height = device.windowHeight - (140 * device.windowWidth/750) - 50
+const height = device.windowHeight - (140 * device.windowWidth / 750) - 50
 
 export default {
   data () {

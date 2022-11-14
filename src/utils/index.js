@@ -1,11 +1,11 @@
 const device = wx.getSystemInfoSync()
-const dWidth = device.windowWidth;
+const dWidth = device.windowWidth
 
-export function rpx2px(rpx){
-	return rpx * dWidth/750
+export function rpx2px (rpx) {
+  return rpx * dWidth / 750
 }
-export function px2rpx(px){
-	return px * 750/dWidth
+export function px2rpx (px) {
+  return px * 750 / dWidth
 }
 
 function formatNumber (n) {
@@ -44,8 +44,8 @@ export function abortAnimationFrame (id) {
 }
 
 export default {
-	rpx2px,
-	px2rpx,
+  rpx2px,
+  px2rpx,
   formatNumber,
   formatTime,
   doAnimationFrame,

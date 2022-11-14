@@ -19,7 +19,7 @@ export default {
       'i-tabs': '../../static/iview/tabs/index',
       'i-tab': '../../static/iview/tab/index',
       'i-divider': '../../static/iview/divider/index',
-			'i-avatar': '../../static/iview/avatar/index'
+      'i-avatar': '../../static/iview/avatar/index'
     }
   }
 }

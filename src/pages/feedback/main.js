@@ -8,7 +8,7 @@ export default {
     'usingComponents': {
       'i-panel': '../../static/iview/panel/index',
       'i-input': '../../static/iview/input/index',
-      'i-button': '../../static/iview/button/index',
+      'i-button': '../../static/iview/button/index'
     }
   }
 }
