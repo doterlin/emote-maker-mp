@@ -1,0 +1,116 @@
+$theme-color: #444; //主题色
+$bg-color: #F7F7F7; //主题色
+$error-color: #D34827; //主题危险色
+$warn-color: #F7BF12; //主题警告色
+$succ-color: #3EC158; //主题成功色
+$font-color: #888; //主文字色
+$font-size: 24rpx; //主字号
+$padding: 30rpx; //主间距
+$i: !important; //缩写
+
+page{
+	color: $theme-color;
+	font-size: $font-size;
+	.theme-{
+		// 定制button
+		&button{
+			background-color: $theme-color $i;
+			border-radius: 100rpx $i;
+		}
+		
+		&tabbar{
+			height: 120rpx $i;
+		}
+		
+		&tabbar-item{
+			// height: 120rpx $i;
+		}
+	}
+	
+	.i-tab-bar-item-img{
+		width: 80rpx $i;
+		height: 80rpx $i;
+	}
+}
+
+// 公共类
+.flex{
+	display: flex;
+}
+.flex-mid{
+	align-items: center;
+	justify-content: center;
+}
+.flex-1{
+	flex: 1;
+}
+
+
+.flex-bet{
+	justify-content: space-between;
+	align-items: center;
+}
+
+.flex-col{
+	flex-direction: column;
+}
+
+.bold{
+	font-weight: bold;
+}
+
+.ml20{
+	margin-left: 20rpx;
+}
+
+
+//全局样式
+.content{
+	background: $bg-color;
+	padding: 0 $padding;
+}
+
+.wrapper100{
+	height: 100%;
+}
+
+.m-button{
+	background-color: $theme-color;
+	font-size: $font-size;
+	color: #fff;
+	border-radius: 6rpx;
+	height: 56rpx;
+	display: block;
+	line-height: 56rpx;
+	padding: 0 20rpx;
+	text-align: center;
+	margin: 0;
+	border: 0;
+	
+	&.error{
+		background-color: $error-color;
+	}
+	
+	&.warn{
+		background-color: $warn-color;
+	}
+	&.succ{
+		background-color: $succ-color;
+	}
+	
+	&.large{
+		height: 76rpx;
+		line-height: 76rpx;
+		border-radius: 10rpx;
+	}
+}
+
+.loadding{
+	width: 100%;
+	margin-top: 10rpx;
+	line-height: 20rpx;
+	height: 20rpx;
+	text-align: center;
+	font-size: $font-size - 1rpx;
+	color: #333;
+}
